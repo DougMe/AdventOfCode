@@ -1,1 +1,0 @@
-Just a place to keep track of my SQL solutions for AdventOfCode

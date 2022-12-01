@@ -2,8 +2,8 @@ if exists(select 1 from sys.tables where name = 'tmp_input')
 drop table tmp_input 
 select IDENTITY(int,1,1) id,convert(int,value) calories, converT(int, null) elf
 into tmp_input
-FROM OPENROWSET(BULK  'C:\adventofcode\2022\input.txt', 
-                         FORMATFILE='C:\adventofcode\2022\input.fmt', firstrow=1) test
+FROM OPENROWSET(BULK  'C:\adventofcode\2022\Day01\input.txt', 
+                         FORMATFILE='C:\adventofcode\2022\Day01\input.fmt', firstrow=1) test
 ALTER TABLE dbo.tmp_input ADD CONSTRAINT
 	PK_tmp_input PRIMARY KEY CLUSTERED 
 	(
