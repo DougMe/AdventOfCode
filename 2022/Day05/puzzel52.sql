@@ -56,7 +56,7 @@ select * from tmp_input2
 declare @instruction int, @maxinstruction int, @howmany int, @movement int, @fromvalue varchar(1), @sql nvarchar(max), @colfrom varchar(10), @colto varchar(10)
 set @instruction = 1
 set @maxinstruction = (select max(id) from tmp_input2)
-while @instruction <= 1-- @maxinstruction
+while @instruction <= @maxinstruction
 begin
 set @movement = 1
 set @howmany = (select howmany from tmp_input2 where id = @instruction)
@@ -68,12 +68,12 @@ print @colto
 	while @howmany >= @movement
 	begin
 	DECLARE @ParmDefinition NVARCHAR(500);  
-	set @sql = (select 'select @fromvalue=' + @colfrom + ' from tmp_input where id = (select min(id) + ' + convert(varchar(2),@howmany) + ' from tmp_input where ascii(' + @colfrom + ') between 65 and 90)')
+	set @sql = (select 'select @fromvalue=' + @colfrom + ' from tmp_input where id = (select min(id) + ' + convert(varchar(2),@howmany) + ' - 1 from tmp_input where ascii(' + @colfrom + ') between 65 and 90)')
 	print @sql
 	SET @ParmDefinition = N'@fromvalue VARCHAR(1) OUTPUT';  
 	EXECUTE sp_executesql @sql, @ParmDefinition, @fromvalue=@fromvalue OUTPUT;  
 	print @fromvalue
-	set @sql = (select 'update tmp_input set ' + @colfrom + ' = '''' from tmp_input where id = isnull((select min(id)  + ' + convert(varchar(2),@howmany) + ' from tmp_input where ASCII(' + @colfrom + ') between 65 and 90),100)')
+	set @sql = (select 'update tmp_input set ' + @colfrom + ' = '''' from tmp_input where id = isnull((select min(id)  + ' + convert(varchar(2),@howmany) + ' - 1 from tmp_input where ASCII(' + @colfrom + ') between 65 and 90),100)')
 	print @sql
 	exec (@sql)
 	set @sql = (select 'update tmp_input set ' + @colto + ' = ''' + @fromvalue + ''' from tmp_input where id = isnull((select min(id) from tmp_input where ASCII(' + @colto + ') between 65 and 90),101) - 1')
@@ -84,6 +84,7 @@ print @colto
 set @instruction = @instruction +1
 end
 
+--select * from tmp_input
  
  SELECT (select col1 from tmp_input where id = (select min(id) from tmp_input where ascii(col1) between 65 and 90))  +
   (select col2 from tmp_input where id = (select min(id) from tmp_input where ascii(col2) between 65 and 90))  +
