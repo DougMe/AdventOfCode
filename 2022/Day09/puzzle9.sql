@@ -2,7 +2,7 @@
 USE AOC
 GO
 
-CREATE or alter FUNCTION dbo.calctailpos
+alter FUNCTION dbo.calctailpos
 (
 	-- Add the parameters for the function here
 	@hx int,
@@ -172,7 +172,7 @@ create table tmp_input2(id int identity(1,1), hx int not null default(0),hy int 
 CONSTRAINT [PK_tmp_input2] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
 declare @hx int = 146, @hy int = 146, @tx int = 146, @ty int = 146, @counter int = 1, @maxcounter int
@@ -183,7 +183,7 @@ while @counter <= @maxcounter
 begin
 	declare @moveamt int, @dir nvarchar(1), @innercounter int
 	set @innercounter = 1
-	set @moveamt = (select amt from tmp_input where id = @counter)
+	set @moveamt = (select replace(amt,char(13),'') from tmp_input where id = @counter)
 	set @dir = (select dir from tmp_input where id = @counter)
 	while @innercounter <= @moveamt
 	begin
@@ -256,7 +256,7 @@ values(@hx,@hy
 while @counter2 <= @maxcounter2
 begin
 	set @innercounter = 1
-	set @moveamt = (select amt from tmp_input where id = @counter2)
+	set @moveamt = (select replace(amt,char(13),'') from tmp_input where id = @counter2)
 	set @dir = (select dir from tmp_input where id = @counter2)
 	while @innercounter <= @moveamt
 	begin
